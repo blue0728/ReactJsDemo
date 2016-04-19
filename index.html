@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello React!</title>
+    <script src="build/react.js"></script>
+    <script src="build/react-dom.js"></script>
+    <script src="build/browser.min.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div id="example" class="container-fluid"></div>
+    <script type="text/babel">
+    var Arrs = [1, 2, 3];
+
+    ReactDOM.render(
+        <div className="col-lg-3">
+            <div className="panel panel-default">
+                <div className="panel-heading">目录</div>
+                <div className="list-group">
+                {
+                    Arrs.map(function (name, key){
+                        return <a className="list-group-item" key={key} href={'/demo/' + name + '.html'}>{name}.html</a>            
+                    })
+                }
+                </div>
+            </div>
+        </div>,
+        document.getElementById('example')
+    );
+    </script>
+  </body>
+</html>

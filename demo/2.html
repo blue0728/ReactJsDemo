@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+	<script src="../build/jquery-2.2.3.min.js"></script>
+</head>
+<body>
+	<div id="example"></div>
+	<div id="list"></div>
+	<div id="title"></div>
+	<div id="dom"></div>
+	<div id="like"></div>
+	<div id="input"></div>
+	<div id="hello"></div>
+	<div id="urllist"></div>
+<script type="text/babel">
+	var HelloMessage = React.createClass({
+		render: function() {
+			return	(
+					<div>
+						<h1> hello {this.props.name}</h1>
+						<p>some test</p>
+					</div>
+				);
+		}
+	});
+	var List = React.createClass({
+		render: function(){
+			return (
+				<ol>
+				{
+					React.Children.map(this.props.children, function(child){
+						return <li>{child}</li>
+					})
+				}	
+				</ol>
+			)
+		}
+	});
+	var MyTitle = React.createClass({
+		propTypes: {
+			title: React.PropTypes.string.isRequired
+		},
+		getDefaultProps: function(){
+			return {
+				title: '我时标题~~~'
+			}
+		},
+		render: function(){
+			return <h1>{this.props.title}</h1>;
+		}
+	});
+	var Doom = React.createClass({
+		handleClick: function(){
+			this.refs.myTextInput.focus();
+		},
+		render: function(){
+			return (
+				<div>
+					<input type="text" ref="myTextInput"/>
+					<input type="button" value="focus the text input" onClick={this.handleClick}/>
+				</div>
+			)
+		}
+	});
+	var LikeButton = React.createClass({
+		getInitialState: function(){
+			return {
+				liked: false
+			}
+		},
+		handleClick: function(even){
+			this.setState({liked: !this.state.liked});
+		},
+		render: function(){
+			var text = this.state.liked ? '喜欢' : '不喜欢';
+			return (
+				<p onClick={this.handleClick}>
+				点击切换{text}状态
+				</p>
+			);
+		}
+	});
+	var Input = React.createClass({
+		getInitialState: function(){
+			return {value: 'Hello!'};
+		},
+		handleClick: function(even){
+			this.setState({value: even.target.value});
+		},
+		render: function(){
+			var value = this.state.value;
+			return (
+				<div>
+					<input type="text" value={value} onChange={this.handleClick}/>
+					<p>{value}</p>
+				</div>
+			)
+		}
+	});
+	var Hello = React.createClass({
+		getInitialState: function(){
+			return {opacity: 1};
+		},
+		componentDidMount: function() {
+			this.timer = setInterval(function(){
+				var opacity = this.state.opacity;
+				opacity -= 0.05;
+				if(opacity < 0.1){
+					opacity = 1;
+				}
+				this.setState({
+					opacity: opacity
+				})	
+			}.bind(this), 100);
+		},
+		render: function(){
+			return (
+				<div style={{opacity: this.state.opacity}}>
+				Hello {this.state.opacity}
+				</div>
+			);
+		}
+	});
+	var UserList = React.createClass({
+		getInitialState: function() {
+			return {
+				list: [] 
+			};
+		},
+		componentDidMount: function() {
+			$.get(this.props.source, function(result){
+				if(this.isMounted()){
+					this.setState({
+						list: result
+					})
+				}
+			}.bind(this));
+		},
+		render: function(){
+			var list = this.state.list;
+			var items = list.map(function(item, key){
+				return (
+					<p key={key}>
+						<a href={item.html_url}>{item.created_at}</a>
+					</p>
+				);
+			});
+			return (
+				<div>
+				{items}
+				</div>
+			)
+		}
+	});
+
+	ReactDOM.render(
+		<UserList source="https://api.github.com/users/octocat/gists"></UserList>,
+		document.getElementById('urllist')
+	)
+
+	ReactDOM.render(
+		<Hello></Hello>,
+		document.getElementById('hello')
+	)
+
+	ReactDOM.render(
+		<Input></Input>,
+		document.getElementById('input')
+	)
+
+	ReactDOM.render(
+		<LikeButton></LikeButton>,
+		document.getElementById('like')
+	)
+
+	ReactDOM.render(
+		<Doom></Doom>,
+		document.getElementById('dom')
+	)
+	//var data = '标题';
+	ReactDOM.render(
+		<MyTitle></MyTitle>,
+		document.getElementById('title')
+	)
+
+	ReactDOM.render(
+		<List>
+			<span>哈哈哈</span>
+			<span>嘻嘻</span>
+		</List>,
+		document.getElementById('list')
+	);
+
+	ReactDOM.render(
+		<HelloMessage name="John"></HelloMessage>,
+		document.getElementById('example')
+	);
+
+</script>	
+</body>
+</html>
